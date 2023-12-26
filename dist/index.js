@@ -121,7 +121,7 @@ function createMessageCard(notificationSummary, notificationColor, commit, autho
     if (commitMessage.includes('#')) {
         commit.data.commit.message.split(' ').forEach((data) => {
             if (/^#\d+$/.test(data)) {
-                pr = data;
+                pr = data.replace('#', '');
             }
         });
     }
