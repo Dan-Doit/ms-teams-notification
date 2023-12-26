@@ -109,23 +109,29 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createMessageCard = void 0;
 function createMessageCard(notificationSummary, notificationColor, commit, author, runNum, runId, repoName, sha, repoUrl, timestamp) {
+    var _a, _b;
+    const commitMessage = (_b = (_a = commit === null || commit === void 0 ? void 0 : commit.data) === null || _a === void 0 ? void 0 : _a.commit) === null || _b === void 0 ? void 0 : _b.message;
     let avatar_url = 'https://www.gravatar.com/avatar/05b6d8cc7c662bf81e01b39254f88a48?d=identicon';
+    let pr = '';
     if (author) {
         if (author.avatar_url) {
             avatar_url = author.avatar_url;
         }
     }
-    const messageCard = {
+    if (commitMessage.includes('#')) {
+        commit.data.commit.message.split(' ').forEach((data) => {
+            if (/^#\d+$/.test(data)) {
+                pr = data;
+            }
+        });
+    }
+    return {
         '@type': 'MessageCard',
         '@context': 'https://schema.org/extensions',
         summary: notificationSummary,
         themeColor: notificationColor,
         title: notificationSummary,
         sections: [
-            {
-                activityTitle: `**Commit Message**`,
-                activitySubtitle: `${commit.data.commit.message}`
-            },
             {
                 activityTitle: `**CI #${runNum} (commit ${sha.substr(0, 7)})** on [${repoName}](${repoUrl})`,
                 activityImage: avatar_url,
@@ -135,19 +141,24 @@ function createMessageCard(notificationSummary, notificationColor, commit, autho
         potentialAction: [
             {
                 '@context': 'http://schema.org',
-                target: [`${repoUrl}/actions/runs/${runId}`],
+                target: [`${repoUrl}/pull/${pr}`],
                 '@type': 'ViewAction',
-                name: 'View Workflow Run'
+                name: '개발 사항'
             },
             {
                 '@context': 'http://schema.org',
                 target: [commit.data.html_url],
                 '@type': 'ViewAction',
-                name: 'View Commit Changes'
+                name: '코드변경 내역'
+            },
+            {
+                '@context': 'http://schema.org',
+                target: [`${repoUrl}/actions/runs/${runId}`],
+                '@type': 'ViewAction',
+                name: 'Workflow 확인'
             }
         ]
     };
-    return messageCard;
 }
 exports.createMessageCard = createMessageCard;
 

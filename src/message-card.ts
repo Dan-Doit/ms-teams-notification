@@ -10,24 +10,32 @@ export function createMessageCard(
   repoUrl: string,
   timestamp: string
 ): any {
-  let avatar_url =
+  const commitMessage: string = commit?.data?.commit?.message
+  let avatar_url: string =
     'https://www.gravatar.com/avatar/05b6d8cc7c662bf81e01b39254f88a48?d=identicon'
+  let pr: string = ''
+
   if (author) {
     if (author.avatar_url) {
       avatar_url = author.avatar_url
     }
   }
-  const messageCard = {
+
+  if (commitMessage.includes('#')) {
+    commit.data.commit.message.split(' ').forEach((data: string) => {
+      if (/^#\d+$/.test(data)) {
+        pr = data
+      }
+    })
+  }
+
+  return {
     '@type': 'MessageCard',
     '@context': 'https://schema.org/extensions',
     summary: notificationSummary,
     themeColor: notificationColor,
     title: notificationSummary,
     sections: [
-      {
-        activityTitle: `**Commit Message**`,
-        activitySubtitle: `${commit.data.commit.message}`
-      },
       {
         activityTitle: `**CI #${runNum} (commit ${sha.substr(
           0,
@@ -40,17 +48,22 @@ export function createMessageCard(
     potentialAction: [
       {
         '@context': 'http://schema.org',
-        target: [`${repoUrl}/actions/runs/${runId}`],
+        target: [`${repoUrl}/pull/${pr}`],
         '@type': 'ViewAction',
-        name: 'View Workflow Run'
+        name: '개발 사항'
       },
       {
         '@context': 'http://schema.org',
         target: [commit.data.html_url],
         '@type': 'ViewAction',
-        name: 'View Commit Changes'
+        name: '코드변경 내역'
+      },
+      {
+        '@context': 'http://schema.org',
+        target: [`${repoUrl}/actions/runs/${runId}`],
+        '@type': 'ViewAction',
+        name: 'Workflow 확인'
       }
     ]
   }
-  return messageCard
 }
