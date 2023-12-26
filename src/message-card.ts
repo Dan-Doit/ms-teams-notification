@@ -24,7 +24,7 @@ export function createMessageCard(
   if (commitMessage.includes('#')) {
     commit.data.commit.message.split(' ').forEach((data: string) => {
       if (/^#\d+$/.test(data)) {
-        pr = data
+        pr = data.replace('#', '')
       }
     })
   }

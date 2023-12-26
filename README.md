@@ -23,8 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # this is the new step using the ms-teams-notification action
-      - name: Notify dedicated teams channel
-        uses: jdcargile/ms-teams-notification@v1.3
+      - name: Microsoft Teams Notification With KOR
+        uses: Dan-Doit/ms-teams-notification@1.0.0
         with:
           github-token: ${{ github.token }} # this will use the runner's token.
           ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
