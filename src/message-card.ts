@@ -25,6 +25,10 @@ export function createMessageCard(
     title: notificationSummary,
     sections: [
       {
+        activityTitle: `**Commit Message**`,
+        activitySubtitle: `${commit.data.commit.message}`
+      },
+      {
         activityTitle: `**CI #${runNum} (commit ${sha.substr(
           0,
           7
