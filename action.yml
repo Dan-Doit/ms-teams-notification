@@ -1,4 +1,4 @@
-name: 'Microsoft Teams Notification With PR'
+name: 'Microsoft Teams Notification With KOR'
 description: 'Send a custom notification message to a Microsoft Teams channel with GitHub repo details'
 author: 'jdcargile'
 branding:
